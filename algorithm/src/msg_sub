@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+import rospy
+from common_msgs.msg import Msg
+from common_msgs.srv import Srv, SrvResponse
+
+
+def srv_callback(req) :
+    rep = SrvResponse(result=req.type1 and req.type2)
+    if rep.result == False:
+        print("-------10 second pass---------")
+    elif rep.result == True:
+        print("------Reset count--------")
+    return rep
+
+
+def callback(msg):
+    print("subscribe", msg.number)
+    calb1 = msg.number.data * msg.rotation.position.x
+    calb2 = msg.rotation.orientation.x * msg.rotation.position.y
+    print(calb1)
+    print(calb2)
+    print("------")
+
+
+
+
+rospy.init_node('msg_pub')
+sub = rospy.Subscriber('DateTime_msg', Msg, callback)
+srv = rospy.Service('srv_requester', Srv, srv_callback)
+rospy.spin()
